@@ -23,5 +23,8 @@ RUN mkdir -p /tmp/allpix-squared/build && \
     make install && \
     rm -rf /tmp/allpix-squared
 
+# Set FISH environment varible for Aaron's tag
+ENV SLURM_INTERACTIVE_STATUS=allpix
+
 # Default command for starting the container, executed after the ENTRYPOINT
 CMD ["bash"]
