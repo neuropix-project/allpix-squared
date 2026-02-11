@@ -15,6 +15,12 @@ RUN apt-get install -y dpkg-dev libx11-dev libxpm-dev libxft-dev libxext-dev lib
 # Install helpful Python packages
 RUN apt-get install -y python3-numpy python3-matplotlib python3-scipy python3-pandas
 
+# Install X11
+RUN apt-get install -y xorg x11-apps
+
+# Install packages for Aaron
+RUN apt-get install -y vim fish
+
 # Add layer for ROOT6
 ENV ROOT6_VERSION=6.36.04
 ENV PYTHONPATH="/usr/local/lib:$PYTHONPATH"
@@ -30,8 +36,8 @@ RUN mkdir -p ${ROOTSYS}/src ${ROOTSYS}/build && \
            -Dgenvector=ON \
            -Dmathmore=ON \
            -Dthread=ON \
-           -Dx11=OFF \
-           -Dopengl=OFF \
+           -Dx11=ON \
+           -Dopengl=ON \
            -Dtmva=OFF -Dtmva-cpu=OFF -Dtmva-pymva=OFF \
            -Dhttp=OFF \
            -Dwebgui=OFF \

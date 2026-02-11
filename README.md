@@ -19,6 +19,68 @@ For more details about the project please have a look at the website at [https:/
 [![REUSE status](https://api.reuse.software/badge/gitlab.cern.ch/allpix-squared/allpix-squared)](https://api.reuse.software/info/gitlab.cern.ch/allpix-squared/allpix-squared)
 
 
+## NeuroPix Specific
+
+### Allpix Squared Docker Images with GUI support
+
+See [allpix - Building Docker Images](https://allpix-squared.docs.cern.ch/docs/11_devtools/05_building_docker_images/) for instructions.
+
+Harbor instance: [Savannah - Neuropix](https://savannah.ornl.gov/harbor/projects/192/repositories)
+
+#### Build the dependencies image
+
+```bash
+docker build --file etc/docker/ubuntu-24.04/Dockerfile.deps \
+  --tag allpix-squared-gui-deps:v1 \
+  --tag allpix-squared-gui-deps:latest \
+  --tag savannah.ornl.gov/neuropix/allpix-squared-gui-deps:v1 \
+  --tag savannah.ornl.gov/neuropix/allpix-squared-gui-deps:latest \
+  .
+```
+```bash
+docker push savannah.ornl.gov/neuropix/allpix-squared-gui-deps:v1
+docker push savannah.ornl.gov/neuropix/allpix-squared-gui-deps:latest
+```
+
+#### Build Allpix<sup>2</sup> image
+
+```bash
+docker build --file etc/docker/ubuntu-24.04/Dockerfile \
+  --tag allpix-squared-gui:v1 \
+  --tag allpix-squared-gui:latest \
+  --tag savannah.ornl.gov/neuropix/allpix-squared-gui:v1 \
+  --tag savannah.ornl.gov/neuropix/allpix-squared-gui:latest \
+  .
+```
+```bash
+docker push savannah.ornl.gov/neuropix/allpix-squared-gui:v1
+docker push savannah.ornl.gov/neuropix/allpix-squared-gui:latest
+```
+
+#### Export to Apptainer/Singularity
+
+```bash
+docker images
+```
+```bash
+docker save allpix-squared-gui:latest -o allpix-squared-gui-latest.tar
+```
+```bash
+apptainer build allpix-squared-gui.sif docker-archive:allpix-squared-gui-latest.tar
+```
+
+#### Using the Apptainer/Singularity image
+
+Pull the image from the Harbor instance:
+```bash
+apptainer pull docker://savannah.ornl.gov/neuropix/allpix-squared-gui:latest
+```
+
+Run the apptainer image:
+```bash
+apptainer run allpix-squared-gui_latest.sif
+```
+
 ## Using Allpix<sup>2</sup>
 
 ### Docker Images

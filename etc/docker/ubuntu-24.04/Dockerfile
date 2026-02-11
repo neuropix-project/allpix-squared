@@ -1,8 +1,8 @@
 # SPDX-FileCopyrightText: 2018-2025 CERN and the Allpix Squared authors
 # SPDX-License-Identifier: MIT
 
-FROM gitlab-registry.cern.ch/allpix-squared/allpix-squared/allpix-squared-ubuntu2404-deps:latest
-MAINTAINER Simon Spannagel <simon.spannagel@cern.ch>
+FROM allpix-squared-gui-deps:latest
+LABEL maintainer="Aaron Young <youngar@ornl.gov>"
 ARG ALLPIX_BUILD_ENV="Docker"
 
 # Copy currently checked out git revision:
