@@ -1,8 +1,8 @@
 # SPDX-FileCopyrightText: 2018-2025 CERN and the Allpix Squared authors
 # SPDX-License-Identifier: MIT
 
-FROM gitlab-registry.cern.ch/allpix-squared/allpix-squared/allpix-squared-ubuntu2204-deps:latest
-MAINTAINER Simon Spannagel <simon.spannagel@cern.ch>
+FROM allpix-squared-gui-deps:latest
+LABEL maintainer="Aaron Young <youngar@ornl.gov>"
 ARG ALLPIX_BUILD_ENV="Docker"
 
 # Copy currently checked out git revision:
@@ -17,11 +17,14 @@ RUN mkdir -p /tmp/allpix-squared/build && \
     cmake -DCMAKE_INSTALL_PREFIX=/usr/local/ \
           -DBUILD_DatabaseWriter=ON \
           -DBUILD_LCIOWriter=ON \
-          -DBUILD_VisualizationGeant4=OFF \
+          -DBUILD_VisualizationGeant4=ON \
           .. && \
     make -j`grep -c processor /proc/cpuinfo` && \
     make install && \
     rm -rf /tmp/allpix-squared
+
+# Set FISH environment varible for Aaron's tag
+ENV SLURM_INTERACTIVE_STATUS=allpix
 
 # Default command for starting the container, executed after the ENTRYPOINT
 CMD ["bash"]
