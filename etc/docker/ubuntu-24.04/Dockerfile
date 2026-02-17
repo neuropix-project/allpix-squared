@@ -17,7 +17,7 @@ RUN mkdir -p /tmp/allpix-squared/build && \
     cmake -DCMAKE_INSTALL_PREFIX=/usr/local/ \
           -DBUILD_DatabaseWriter=ON \
           -DBUILD_LCIOWriter=ON \
-          -DBUILD_VisualizationGeant4=OFF \
+          -DBUILD_VisualizationGeant4=ON \
           .. && \
     make -j`grep -c processor /proc/cpuinfo` && \
     make install && \
