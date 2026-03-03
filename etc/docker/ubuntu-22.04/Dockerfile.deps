@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: MIT
 
 FROM ubuntu:22.04
-LABEL maintainer="Simon Spannagel <simon.spannagel@cern.ch>"
+LABEL maintainer="Aaron Young <youngar@ornl.gov>"
 
 SHELL ["/bin/bash", "-c"]
 
@@ -16,7 +16,30 @@ RUN apt-get install -y dpkg-dev libx11-dev libxpm-dev libxft-dev libxext-dev lib
 RUN apt-get install -y python3-numpy python3-matplotlib python3-scipy python3-pandas
 
 # Install X11
-RUN apt-get install -y xorg x11-apps
+RUN apt-get install -y xorg x11-apps \
+   libgl1-mesa-dev \
+   libglu1-mesa-dev \
+   libx11-dev \
+   libxext-dev \
+   libxi-dev \
+   libxmu-dev
+
+# Install Qt5
+RUN apt-get install -y \
+   qtbase5-dev \
+   qtbase5-dev-tools \
+   libqt5opengl5-dev \
+   qtchooser \
+   qt5-qmake \
+   qt3d5-dev
+
+# Install Qt6
+RUN apt-get install -y \
+   qt6-base-dev \
+   qt6-base-dev-tools \
+   libqt6opengl6-dev \
+   libqt6openglwidgets6 \
+   qt6-3d-dev
 
 # Install packages for Aaron
 RUN apt-get install -y vim fish
@@ -97,6 +120,9 @@ RUN mkdir -p ${GEANT4DIR}/src ${GEANT4DIR}/build && \
           -DGEANT4_BUILD_MULTITHREADED=ON \
           -DGEANT4_BUILD_CXXSTD=20 \
           -DGEANT4_BUILD_BUILTIN_BACKTRACE=OFF \
+          -DGEANT4_USE_QT=ON \
+          -DGEANT4_USE_QT_QT5=ON \
+          -DGEANT4_USE_OPENGL_X11=ON \
           ../src/geant4-v${GEANT4_VERSION} && \
     make -j`grep -c processor /proc/cpuinfo` && \
     make install && \
