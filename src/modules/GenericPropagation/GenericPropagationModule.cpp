@@ -571,8 +571,9 @@ GenericPropagationModule::propagate(Event* event,
         // Formula: 1e3*(0.75*[0]*[1]*1.602e-19*x/(TMath::Pi()*8.854e-12*11.7))**(1./3.)
         // where [0] = deposit_charge, [1] = 0.14, x = drift_time
         const double permittivity_Si = 8.854e-12 * 11.7;
-        const double coeff = 1e3 * 0.75 * 0.14 * 1.602e-19 / (TMath::Pi() * permittivity_Si);
-        return std::pow(coeff * drift_time, 1.0 / 3.0) * deposit_charge;
+        const double coeff =  0.75 * 0.14 * 1.602e-19 * deposit_charge * drift_time / (TMath::Pi() * permittivity_Si);
+
+        return 1e3*std::pow(coeff, 1.0 / 3.0);
     };
 
     // Define a function to compute the repulsion smearing term
