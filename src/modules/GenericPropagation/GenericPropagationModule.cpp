@@ -76,6 +76,8 @@ GenericPropagationModule::GenericPropagationModule(Configuration& config,
     config_.setDefault<std::string>("recombination_model", "none");
     config_.setDefault<std::string>("trapping_model", "none");
     config_.setDefault<std::string>("detrapping_model", "none");
+    config_.setDefault<bool>("activate_electrostatic_repulsion", false);
+
 
     config_.setDefault<bool>("output_linegraphs", false);
     config_.setDefault<bool>("output_linegraphs_collected", false);
@@ -129,6 +131,7 @@ GenericPropagationModule::GenericPropagationModule(Configuration& config,
     max_charge_groups_ = config_.get<unsigned int>("max_charge_groups");
     max_multiplication_level_ = config.get<unsigned int>("max_multiplication_level");
     output_max_gain_histo_ = config.get<unsigned int>("output_max_gain_histo");
+    activate_electrostatic_repulsion_ = config_.get<bool>("activate_electrostatic_repulsion");
 
     // Avoids wrong gain histogram inputs
     if(output_max_gain_histo_ < 2) {
@@ -561,7 +564,36 @@ GenericPropagationModule::propagate(Event* event,
     auto runge_kutta = make_runge_kutta(
         tableau::RK5, (has_magnetic_field_ ? carrier_velocity_withB : carrier_velocity_noB), timestep_start_, position);
 
-    // Continue propagation until the deposit is outside the sensor
+    
+
+    auto carrier_repulsion_sigma = [&](double deposit_charge, double drift_time) -> double {
+        // Direct calculation replaces TF1 which is not thread-safe
+        // Formula: 1e3*(0.75*[0]*[1]*1.602e-19*x/(TMath::Pi()*8.854e-12*11.7))**(1./3.)
+        // where [0] = deposit_charge, [1] = 0.14, x = drift_time
+        const double permittivity_Si = 8.854e-12 * 11.7;
+        const double coeff = 1e3 * 0.75 * 0.14 * 1.602e-19 / (TMath::Pi() * permittivity_Si);
+        return std::pow(coeff * drift_time, 1.0 / 3.0) * deposit_charge;
+    };
+
+    // Define a function to compute the repulsion smearing term
+    auto carrier_repulsion = [&](
+        double deposit_charge, double drift_time) -> ROOT::Math::DisplacementVector3D<ROOT::Math::Cartesian3D<double>> {
+        ROOT::Math::DisplacementVector3D<ROOT::Math::Cartesian3D<double>> repulsion;
+
+        // Compute the repulsion smearing term here
+        if(deposit_charge > 0) {
+            std::normal_distribution<double> gauss_distribution(
+                0, Units::get(carrier_repulsion_sigma(deposit_charge, drift_time), "mm"));
+            repulsion.SetXYZ(gauss_distribution(event->getRandomEngine()), gauss_distribution(event->getRandomEngine()), 0);
+            // LOG(INFO) << gauss_distribution(random_generator_) ;
+        }
+
+        return repulsion;
+    };
+    
+    
+    
+        // Continue propagation until the deposit is outside the sensor
     Eigen::Vector3d last_position = position;
     ROOT::Math::XYZVector efield{};
     ROOT::Math::XYZVector last_efield{};
@@ -818,6 +850,12 @@ GenericPropagationModule::propagate(Event* event,
     propagated_charges_count += charge;
     ++steps;
     total_time += time * charge;
+
+    if(activate_electrostatic_repulsion_) {
+                auto repulsion = carrier_repulsion(deposit.getCharge(), time * 1e-9);
+                local_position += repulsion;
+                LOG(DEBUG) << deposit.getCharge() << " " << position << " " << repulsion << " " << time* 1e-9;
+    }
 
     LOG(DEBUG) << " Propagated " << charge << " to " << Units::display(local_position, {"mm", "um"}) << " in "
                << Units::display(time, "ns") << " time, gain " << gain << ", final state: " << allpix::to_string(state);

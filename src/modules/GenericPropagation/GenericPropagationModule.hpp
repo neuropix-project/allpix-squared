@@ -111,7 +111,7 @@ namespace allpix {
             target_spatial_precision_{}, output_plots_step_{};
         bool output_plots_{}, output_linegraphs_{}, output_linegraphs_collected_{}, output_linegraphs_recombined_{},
             output_linegraphs_trapped_{}, output_animations_{};
-        bool propagate_electrons_{}, propagate_holes_{};
+        bool propagate_electrons_{}, propagate_holes_{}, activate_electrostatic_repulsion_{};
         unsigned int charge_per_step_{};
         unsigned int max_charge_groups_{};
         unsigned int max_multiplication_level_{};
