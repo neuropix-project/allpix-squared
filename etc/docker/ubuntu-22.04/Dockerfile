@@ -18,6 +18,7 @@ RUN mkdir -p /tmp/allpix-squared/build && \
           -DBUILD_DatabaseWriter=ON \
           -DBUILD_LCIOWriter=ON \
           -DBUILD_VisualizationGeant4=ON \
+          -DBUILDDepositionGenerator=ON \
           .. && \
     make -j`grep -c processor /proc/cpuinfo` && \
     make install && \
@@ -25,6 +26,11 @@ RUN mkdir -p /tmp/allpix-squared/build && \
 
 # Set FISH environment varible for Aaron's tag
 ENV SLURM_INTERACTIVE_STATUS=allpix
+
+# Install locate and index files
+RUN apt-get install -y \
+   plocate && \
+   updatedb
 
 # Default command for starting the container, executed after the ENTRYPOINT
 CMD ["bash"]

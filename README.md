@@ -31,14 +31,14 @@ Harbor instance: [Savannah - Neuropix](https://savannah.ornl.gov/harbor/projects
 
 ```bash
 docker build --file etc/docker/ubuntu-24.04/Dockerfile.deps \
-  --tag allpix-squared-gui-deps:v1.1 \
+  --tag allpix-squared-gui-deps:v1.2 \
   --tag allpix-squared-gui-deps:latest \
-  --tag savannah.ornl.gov/neuropix/allpix-squared-gui-deps:v1.1 \
+  --tag savannah.ornl.gov/neuropix/allpix-squared-gui-deps:v1.2 \
   --tag savannah.ornl.gov/neuropix/allpix-squared-gui-deps:latest \
   .
 ```
 ```bash
-docker push savannah.ornl.gov/neuropix/allpix-squared-gui-deps:v1.1
+docker push savannah.ornl.gov/neuropix/allpix-squared-gui-deps:v1.2
 docker push savannah.ornl.gov/neuropix/allpix-squared-gui-deps:latest
 ```
 
@@ -46,14 +46,14 @@ docker push savannah.ornl.gov/neuropix/allpix-squared-gui-deps:latest
 
 ```bash
 docker build --file etc/docker/ubuntu-24.04/Dockerfile \
-  --tag allpix-squared-gui:v1.1 \
+  --tag allpix-squared-gui:v1.2 \
   --tag allpix-squared-gui:latest \
-  --tag savannah.ornl.gov/neuropix/allpix-squared-gui:v1.1 \
+  --tag savannah.ornl.gov/neuropix/allpix-squared-gui:v1.2 \
   --tag savannah.ornl.gov/neuropix/allpix-squared-gui:latest \
   .
 ```
 ```bash
-docker push savannah.ornl.gov/neuropix/allpix-squared-gui:v1.1
+docker push savannah.ornl.gov/neuropix/allpix-squared-gui:v1.2
 docker push savannah.ornl.gov/neuropix/allpix-squared-gui:latest
 ```
 
